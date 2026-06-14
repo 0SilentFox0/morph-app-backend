@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"F:/Project/morph-app-backend\" && sed -i 's|App\\\\\\\\Modules\\\\\\\\Packages\\\\\\\\Events|App\\\\\\\\Events|g' app/Events/PackageAssigned.php && head -5 app/Events/PackageAssigned.php)"
+    ]
+  }
+}
