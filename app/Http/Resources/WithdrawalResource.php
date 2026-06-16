@@ -14,9 +14,9 @@ class WithdrawalResource extends JsonResource
             'trainer_id' => $this->trainer_id,
             'amount' => $this->amount,
             'currency' => $this->currency,
-            'withdrawn_at' => $this->withdrawn_at?->toISOString(),
+            'withdrawn_at' => $this->withdrawn_at?->toIso8601String(),
             'note' => $this->note,
-            'created_at' => $this->created_at?->toISOString(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

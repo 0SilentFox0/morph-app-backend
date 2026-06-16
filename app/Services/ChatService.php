@@ -18,7 +18,7 @@ class ChatService
             ->whereHas('participants', function ($q) use ($user): void {
                 $q->where('user_id', $user->id);
             })
-            ->with(['lastMessage', 'participants'])
+            ->with(['lastMessage', 'participants.user'])
             ->orderBy('last_message_at', 'desc')
             ->cursorPaginate(perPage: 15);
     }
@@ -36,7 +36,7 @@ class ChatService
             ->first();
 
         if ($conversation) {
-            return $conversation->load('participants');
+            return $conversation->load('participants.user');
         }
 
         // Create new conversation
@@ -54,7 +54,7 @@ class ChatService
             'user_id'         => $otherUserId,
         ]);
 
-        return $conversation->load('participants');
+        return $conversation->load('participants.user');
     }
 
     public function getMessages(Conversation $conversation, ?string $cursor = null): CursorPaginator

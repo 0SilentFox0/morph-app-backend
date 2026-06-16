@@ -109,7 +109,7 @@ class ProgramController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function store(StoreProgramRequest $request): ProgramResource
+    public function store(StoreProgramRequest $request): JsonResponse
     {
         Gate::authorize('create', Program::class);
 
@@ -118,7 +118,9 @@ class ProgramController extends Controller
             data: $request->validated(),
         );
 
-        return new ProgramResource($program);
+        return (new ProgramResource($program))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Get(
@@ -353,7 +355,7 @@ class ProgramController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function assign(AssignProgramRequest $request, Program $program): ClientProgramResource
+    public function assign(AssignProgramRequest $request, Program $program): JsonResponse
     {
         Gate::authorize('update', $program);
 
@@ -361,7 +363,9 @@ class ProgramController extends Controller
 
         $clientProgram = $this->programService->assignToClient($program, $client);
 
-        return new ClientProgramResource($clientProgram);
+        return (new ClientProgramResource($clientProgram))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Delete(

@@ -34,8 +34,9 @@ class UserResource extends JsonResource
             'work_schedule_days'     => $this->work_schedule_days,
             'goals'                  => $this->goals,
             'fitness_level'          => $this->fitness_level,
-            'onboarding_completed_at' => $this->onboarding_completed_at,
-            'created_at'             => $this->created_at,
+            'onboarding_completed_at' => $this->onboarding_completed_at?->toIso8601String(),
+            'created_at'             => $this->created_at?->toIso8601String(),
+            'updated_at'             => $this->updated_at?->toIso8601String(),
         ];
     }
 }

@@ -17,8 +17,8 @@ class ExerciseResource extends JsonResource
             'muscle_groups' => $this->muscle_groups,
             'equipment' => $this->equipment,
             'video_file_id' => $this->video_file_id,
-            'archived_at' => $this->archived_at?->toISOString(),
-            'created_at' => $this->created_at?->toISOString(),
+            'archived_at' => $this->archived_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

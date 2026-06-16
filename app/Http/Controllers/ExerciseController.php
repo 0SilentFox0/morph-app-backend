@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateExerciseRequest;
 use App\Http\Resources\ExerciseResource;
 use App\Models\Exercise;
 use App\Services\ExerciseService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
@@ -88,7 +89,7 @@ class ExerciseController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function store(StoreExerciseRequest $request): ExerciseResource
+    public function store(StoreExerciseRequest $request): JsonResponse
     {
         Gate::authorize('create', Exercise::class);
 
@@ -97,7 +98,9 @@ class ExerciseController extends Controller
             data: $request->validated(),
         );
 
-        return new ExerciseResource($exercise);
+        return (new ExerciseResource($exercise))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Get(

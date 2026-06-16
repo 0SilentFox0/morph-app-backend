@@ -93,7 +93,7 @@ class ClientController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ],
     )]
-    public function store(StoreClientRequest $request): ClientResource
+    public function store(StoreClientRequest $request): JsonResponse
     {
         Gate::authorize('create', Client::class);
 
@@ -102,7 +102,9 @@ class ClientController extends Controller
             data: $request->validated(),
         );
 
-        return new ClientResource($client);
+        return (new ClientResource($client))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Get(
@@ -280,13 +282,15 @@ class ClientController extends Controller
             new OA\Response(response: 404, description: 'Client not found'),
         ],
     )]
-    public function invite(Client $client): ClientInvitationResource
+    public function invite(Client $client): JsonResponse
     {
         Gate::authorize('invite', $client);
 
         $invitation = $this->clientService->invite($client);
 
-        return new ClientInvitationResource($invitation);
+        return (new ClientInvitationResource($invitation))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Post(

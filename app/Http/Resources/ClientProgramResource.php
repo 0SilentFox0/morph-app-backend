@@ -14,8 +14,8 @@ class ClientProgramResource extends JsonResource
             'client_id' => $this->client_id,
             'program_id' => $this->program_id,
             'program_snapshot' => $this->program_snapshot,
-            'assigned_at' => $this->assigned_at?->toISOString(),
-            'removed_at' => $this->removed_at?->toISOString(),
+            'assigned_at' => $this->assigned_at?->toIso8601String(),
+            'removed_at' => $this->removed_at?->toIso8601String(),
         ];
     }
 }

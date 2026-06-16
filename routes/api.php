@@ -45,6 +45,11 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function (): void {
     Route::put('/me/avatar', [UserController::class, 'updateAvatar']);
     Route::get('/me/onboarding', [UserController::class, 'onboarding']);
     Route::put('/me/onboarding/{step}', [UserController::class, 'updateOnboardingStep']);
+    Route::post('/me/onboarding/complete', [UserController::class, 'completeOnboarding']);
+    Route::get('/me/sessions', [UserController::class, 'mySessions']);
+    Route::get('/me/measurements', [UserController::class, 'myMeasurements']);
+    Route::post('/me/measurements', [UserController::class, 'storeMyMeasurement']);
+    Route::get('/me/workout-logs', [UserController::class, 'myWorkoutLogs']);
     Route::get('/users/{id}', [UserController::class, 'show']);
 
     // Clients

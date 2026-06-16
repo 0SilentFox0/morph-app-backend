@@ -58,17 +58,17 @@ class Client extends Model
 
     public function packages(): HasMany
     {
-        return $this->hasMany('App\Models\ClientPackage');
+        return $this->hasMany(ClientPackage::class);
     }
 
     public function programs(): HasMany
     {
-        return $this->hasMany('App\Models\ClientProgram');
+        return $this->hasMany(ClientProgram::class);
     }
 
     public function measurements(): HasMany
     {
-        return $this->hasMany('App\Models\BodyMeasurement');
+        return $this->hasMany(BodyMeasurement::class);
     }
 
     public function scopeActive(Builder $query): Builder

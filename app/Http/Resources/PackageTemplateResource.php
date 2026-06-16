@@ -19,8 +19,8 @@ class PackageTemplateResource extends JsonResource
             'price' => $this->price,
             'currency' => $this->currency,
             'auto_renew_default' => $this->auto_renew_default,
-            'archived_at' => $this->archived_at?->toISOString(),
-            'created_at' => $this->created_at?->toISOString(),
+            'archived_at' => $this->archived_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

@@ -30,17 +30,21 @@ class WorkoutTrackingService
 
         WorkoutLogUpdated::dispatch($log, $user->id, $log->last_version);
 
-        return $log->load('exercises.sets');
+        return $log->load(['session', 'exercises.sets']);
     }
 
     public function finishWorkout(WorkoutLog $log, User $user): WorkoutLog
     {
+        if ($log->finished_at) {
+            return $log->load('session');
+        }
+
         $log->update([
             'finished_at'         => now(),
             'finished_by_user_id' => $user->id,
         ]);
 
-        return $log->refresh();
+        return $log->refresh()->load('session');
     }
 
     public function getLog(WorkoutLog $log): WorkoutLog

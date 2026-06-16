@@ -23,7 +23,7 @@ class StoreSessionRequest extends FormRequest
             'end_at'          => ['required', 'date', 'after:start_at'],
             'notes'           => ['nullable', 'string'],
             'program_id'      => ['nullable', 'uuid'],
-            'client_ids'      => ['required', 'array'],
+            'client_ids'      => ['nullable', 'array'],
             'client_ids.*'    => ['uuid'],
             'idempotency_key' => ['nullable', 'string', 'max:64'],
         ];

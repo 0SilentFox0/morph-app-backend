@@ -9,7 +9,7 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Services\ChatService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
 class MessageController extends Controller
@@ -51,7 +51,7 @@ class MessageController extends Controller
     )]
     public function store(SendMessageRequest $request, Conversation $conversation): JsonResponse
     {
-        $this->authorize('sendMessage', $conversation);
+        Gate::authorize('sendMessage', $conversation);
 
         $message = $this->chatService->sendMessage(
             $request->user(),
@@ -99,7 +99,7 @@ class MessageController extends Controller
     )]
     public function markAsRead(MarkAsReadRequest $request, Conversation $conversation): JsonResponse
     {
-        $this->authorize('view', $conversation);
+        Gate::authorize('view', $conversation);
 
         $this->chatService->markAsRead(
             $request->user(),
@@ -127,7 +127,7 @@ class MessageController extends Controller
     )]
     public function destroy(Message $message): JsonResponse
     {
-        $this->authorize('delete', $message);
+        Gate::authorize('delete', $message);
 
         $this->chatService->deleteMessage($message);
 

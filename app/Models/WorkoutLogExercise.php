@@ -35,7 +35,7 @@ class WorkoutLogExercise extends Model
 
     public function exercise(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Exercise');
+        return $this->belongsTo(Exercise::class);
     }
 
     public function sets(): HasMany

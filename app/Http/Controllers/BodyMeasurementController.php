@@ -93,7 +93,7 @@ class BodyMeasurementController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function store(StoreMeasurementRequest $request, string $client): BodyMeasurementResource
+    public function store(StoreMeasurementRequest $request, string $client): JsonResponse
     {
         Gate::authorize('create', [BodyMeasurement::class, $client]);
 
@@ -105,7 +105,9 @@ class BodyMeasurementController extends Controller
             recordedBy: $request->user(),
         );
 
-        return new BodyMeasurementResource($measurement);
+        return (new BodyMeasurementResource($measurement))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Delete(

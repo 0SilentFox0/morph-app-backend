@@ -40,6 +40,7 @@ class User extends Authenticatable
         'work_schedule_days',
         'goals',
         'fitness_level',
+        'onboarding_completed_at',
     ];
 
     protected $hidden = [

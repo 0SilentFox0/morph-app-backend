@@ -92,7 +92,7 @@ class PackageTemplateController extends Controller
             new OA\Response(response: 422, description: 'Validation error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
         ]
     )]
-    public function store(StorePackageTemplateRequest $request): PackageTemplateResource
+    public function store(StorePackageTemplateRequest $request): JsonResponse
     {
         Gate::authorize('create', PackageTemplate::class);
 
@@ -101,7 +101,9 @@ class PackageTemplateController extends Controller
             data: $request->validated(),
         );
 
-        return new PackageTemplateResource($template);
+        return (new PackageTemplateResource($template))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Get(

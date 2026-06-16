@@ -47,7 +47,8 @@ class SessionService
             });
         }
 
-        $query->orderBy('start_at', 'desc');
+        $query->with('participants.client')
+            ->orderBy('start_at', 'desc');
 
         return $query->cursorPaginate(perPage: $filters['per_page'] ?? 15);
     }
@@ -72,12 +73,7 @@ class SessionService
 
         $session = TrainingSession::create($data);
 
-        foreach ($clientIds as $clientId) {
-            SessionParticipant::create([
-                'session_id' => $session->id,
-                'client_id'  => $clientId,
-            ]);
-        }
+        $this->syncParticipants($session, $clientIds);
 
         $session->load('participants');
 
@@ -100,13 +96,7 @@ class SessionService
             unset($data['client_ids']);
 
             $session->participants()->delete();
-
-            foreach ($clientIds as $clientId) {
-                SessionParticipant::create([
-                    'session_id' => $session->id,
-                    'client_id'  => $clientId,
-                ]);
-            }
+            $this->syncParticipants($session, $clientIds);
 
             $changes['client_ids'] = $clientIds;
         }
@@ -233,17 +223,22 @@ class SessionService
                     'program_id' => $template['program_id'] ?? null,
                 ]);
 
-                foreach ($clientIds as $clientId) {
-                    SessionParticipant::create([
-                        'session_id' => $session->id,
-                        'client_id'  => $clientId,
-                    ]);
-                }
+                $this->syncParticipants($session, $clientIds);
             }
 
             $current->addDay();
         }
 
         $series->update(['materialized_until' => $untilDate]);
+    }
+
+    private function syncParticipants(TrainingSession $session, array $clientIds): void
+    {
+        foreach ($clientIds as $clientId) {
+            SessionParticipant::create([
+                'session_id' => $session->id,
+                'client_id'  => $clientId,
+            ]);
+        }
     }
 }

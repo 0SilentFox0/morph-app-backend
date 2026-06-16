@@ -21,9 +21,9 @@ class ClientResource extends JsonResource
             'status' => $this->status,
             'notes' => $this->notes,
             'tags' => $this->tags,
-            'archived_at' => $this->archived_at?->toISOString(),
-            'created_at' => $this->created_at?->toISOString(),
-            'updated_at' => $this->updated_at?->toISOString(),
+            'archived_at' => $this->archived_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
+            'updated_at' => $this->updated_at?->toIso8601String(),
         ];
     }
 }

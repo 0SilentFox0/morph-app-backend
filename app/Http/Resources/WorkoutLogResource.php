@@ -15,12 +15,16 @@ class WorkoutLogResource extends JsonResource
         return [
             'id'                  => $this->id,
             'session_id'          => $this->session_id,
+            'trainer_id'          => $this->session?->trainer_id,
             'started_at'          => $this->started_at?->toIso8601String(),
             'started_by_user_id'  => $this->started_by_user_id,
             'finished_at'         => $this->finished_at?->toIso8601String(),
             'finished_by_user_id' => $this->finished_by_user_id,
+            'status'              => $this->finished_at ? 'completed' : 'in_progress',
+            'notes'               => $this->notes ?? null,
             'last_version'        => $this->last_version,
             'created_at'          => $this->created_at?->toIso8601String(),
+            'updated_at'          => $this->updated_at?->toIso8601String(),
             'exercises'           => WorkoutLogExerciseResource::collection($this->whenLoaded('exercises')),
         ];
     }

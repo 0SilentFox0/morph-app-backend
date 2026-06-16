@@ -95,7 +95,7 @@ class TransactionController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function store(StoreTransactionRequest $request): TransactionResource
+    public function store(StoreTransactionRequest $request): JsonResponse
     {
         Gate::authorize('create', Transaction::class);
 
@@ -104,7 +104,9 @@ class TransactionController extends Controller
             data: $request->validated(),
         );
 
-        return new TransactionResource($transaction);
+        return (new TransactionResource($transaction))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Get(

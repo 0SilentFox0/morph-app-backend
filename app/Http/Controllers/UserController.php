@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMeasurementRequest;
 use App\Http\Requests\UpdateAvatarRequest;
 use App\Http\Requests\UpdateOnboardingStepRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UpdateSettingsRequest;
+use App\Http\Resources\BodyMeasurementResource;
+use App\Http\Resources\SessionResource;
 use App\Http\Resources\UserPublicResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\WorkoutLogResource;
+use App\Models\BodyMeasurement;
+use App\Models\Client;
+use App\Models\TrainingSession;
+use App\Models\WorkoutLog;
+use App\Services\ProgressService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Routing\Controller;
 use OpenApi\Attributes as OA;
 
@@ -18,6 +28,7 @@ class UserController extends Controller
 {
     public function __construct(
         private readonly UserService $userService,
+        private readonly ProgressService $progressService,
     ) {}
 
     /**
@@ -205,6 +216,30 @@ class UserController extends Controller
     }
 
     /**
+     * Mark onboarding as complete.
+     */
+    #[OA\Post(
+        path: '/me/onboarding/complete',
+        summary: 'Mark onboarding as complete',
+        security: [['sanctum' => []]],
+        tags: ['Users'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Onboarding marked complete',
+                content: new OA\JsonContent(ref: '#/components/schemas/User'),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+        ],
+    )]
+    public function completeOnboarding(Request $request): UserResource
+    {
+        $user = $this->userService->completeOnboarding($request->user());
+
+        return new UserResource($user);
+    }
+
+    /**
      * Get the authenticated user's onboarding progress.
      */
     #[OA\Get(
@@ -317,5 +352,76 @@ class UserController extends Controller
                 'updated_at'   => $progress->updated_at,
             ],
         ]);
+    }
+
+    // ── Client-self endpoints (/me/*) ──────────────────────────────
+
+    public function mySessions(Request $request): AnonymousResourceCollection
+    {
+        $sessions = TrainingSession::whereHas('participants', function ($q) use ($request): void {
+            $q->whereHas('client', function ($cq) use ($request): void {
+                $cq->where('user_id', $request->user()->id);
+            });
+        })
+            ->with('participants.client')
+            ->orderBy('start_at', 'desc')
+            ->paginate(perPage: $request->integer('per_page', 15));
+
+        return SessionResource::collection($sessions);
+    }
+
+    public function myMeasurements(Request $request): AnonymousResourceCollection
+    {
+        $clientId = $this->resolveClientId($request);
+
+        if (!$clientId) {
+            return BodyMeasurementResource::collection(collect());
+        }
+
+        $measurements = $this->progressService->listMeasurements(
+            clientId: $clientId,
+            filters: $request->only(['metric_type', 'from', 'to', 'per_page']),
+        );
+
+        return BodyMeasurementResource::collection($measurements);
+    }
+
+    public function storeMyMeasurement(StoreMeasurementRequest $request): JsonResponse
+    {
+        $clientId = $this->resolveClientId($request);
+
+        if (!$clientId) {
+            return response()->json(['message' => 'No client record found.'], 404);
+        }
+
+        $data = $request->validated();
+        $data['client_id'] = $clientId;
+
+        $measurement = $this->progressService->createMeasurement(
+            data: $data,
+            recordedBy: $request->user(),
+        );
+
+        return (new BodyMeasurementResource($measurement))
+            ->response()
+            ->setStatusCode(201);
+    }
+
+    public function myWorkoutLogs(Request $request): AnonymousResourceCollection
+    {
+        $logs = WorkoutLog::whereHas('session.participants', function ($q) use ($request): void {
+            $q->whereHas('client', function ($cq) use ($request): void {
+                $cq->where('user_id', $request->user()->id);
+            });
+        })
+            ->orderBy('started_at', 'desc')
+            ->paginate(perPage: $request->integer('per_page', 15));
+
+        return WorkoutLogResource::collection($logs);
+    }
+
+    private function resolveClientId(Request $request): ?string
+    {
+        return Client::where('user_id', $request->user()->id)->value('id');
     }
 }

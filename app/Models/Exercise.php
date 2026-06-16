@@ -46,7 +46,7 @@ class Exercise extends Model
 
     public function videoFile(): BelongsTo
     {
-        return $this->belongsTo('App\Models\MediaFile', 'video_file_id');
+        return $this->belongsTo(MediaFile::class, 'video_file_id');
     }
 
     public function programExercises(): HasMany

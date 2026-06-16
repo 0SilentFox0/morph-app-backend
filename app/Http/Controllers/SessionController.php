@@ -12,7 +12,7 @@ use App\Services\SessionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
 class SessionController extends Controller
@@ -160,7 +160,7 @@ class SessionController extends Controller
     )]
     public function show(TrainingSession $session): SessionResource
     {
-        $this->authorize('view', $session);
+        Gate::authorize('view', $session);
 
         $session->load('participants');
 
@@ -205,7 +205,7 @@ class SessionController extends Controller
     )]
     public function update(UpdateSessionRequest $request, TrainingSession $session): SessionResource
     {
-        $this->authorize('update', $session);
+        Gate::authorize('update', $session);
 
         $session = $this->sessionService->update($session, $request->validated());
 
@@ -244,7 +244,7 @@ class SessionController extends Controller
     )]
     public function updateStatus(UpdateSessionStatusRequest $request, TrainingSession $session): SessionResource
     {
-        $this->authorize('update', $session);
+        Gate::authorize('update', $session);
 
         $session = $this->sessionService->updateStatus(
             $session,
@@ -286,7 +286,7 @@ class SessionController extends Controller
     )]
     public function cancel(Request $request, TrainingSession $session): SessionResource
     {
-        $this->authorize('cancel', $session);
+        Gate::authorize('cancel', $session);
 
         $request->validate([
             'reason' => ['required', 'string'],
@@ -314,7 +314,7 @@ class SessionController extends Controller
     )]
     public function destroy(TrainingSession $session): JsonResponse
     {
-        $this->authorize('delete', $session);
+        Gate::authorize('delete', $session);
 
         $this->sessionService->delete($session);
 

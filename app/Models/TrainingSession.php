@@ -54,12 +54,12 @@ class TrainingSession extends Model
 
     public function program(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Program');
+        return $this->belongsTo(Program::class);
     }
 
     public function clientPackage(): BelongsTo
     {
-        return $this->belongsTo('App\Models\ClientPackage');
+        return $this->belongsTo(ClientPackage::class);
     }
 
     public function series(): BelongsTo
@@ -74,7 +74,7 @@ class TrainingSession extends Model
 
     public function workoutLog(): HasOne
     {
-        return $this->hasOne('App\Models\WorkoutLog', 'session_id');
+        return $this->hasOne(WorkoutLog::class, 'session_id');
     }
 
     // ── Scopes ────────────────────────────────────────────────────

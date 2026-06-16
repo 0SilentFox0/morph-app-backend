@@ -96,7 +96,7 @@ class ClientPackageController extends Controller
             new OA\Response(response: 422, description: 'Validation error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError')),
         ]
     )]
-    public function store(AssignClientPackageRequest $request): ClientPackageResource
+    public function store(AssignClientPackageRequest $request): JsonResponse
     {
         Gate::authorize('create', ClientPackage::class);
 
@@ -105,7 +105,9 @@ class ClientPackageController extends Controller
             data: $request->validated(),
         );
 
-        return new ClientPackageResource($package);
+        return (new ClientPackageResource($package))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Get(

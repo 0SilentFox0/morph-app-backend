@@ -52,7 +52,7 @@ class ClientPackage extends Model
 
     public function client(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Client');
+        return $this->belongsTo(Client::class);
     }
 
     public function trainer(): BelongsTo
@@ -72,12 +72,12 @@ class ClientPackage extends Model
 
     public function sessions(): HasMany
     {
-        return $this->hasMany('App\Models\TrainingSession', 'client_package_id');
+        return $this->hasMany(TrainingSession::class, 'client_package_id');
     }
 
     public function transactions(): HasMany
     {
-        return $this->hasMany('App\Models\Transaction', 'client_package_id');
+        return $this->hasMany(Transaction::class, 'client_package_id');
     }
 
     // ── Scopes ────────────────────────────────────────────────────

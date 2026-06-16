@@ -36,7 +36,7 @@ class WorkoutLog extends Model
 
     public function session(): BelongsTo
     {
-        return $this->belongsTo('App\Models\TrainingSession', 'session_id');
+        return $this->belongsTo(TrainingSession::class, 'session_id');
     }
 
     public function startedBy(): BelongsTo

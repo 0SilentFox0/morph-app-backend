@@ -15,9 +15,9 @@ class BodyMeasurementResource extends JsonResource
             'metric_type' => $this->metric_type,
             'value' => $this->value,
             'unit' => $this->unit,
-            'measured_at' => $this->measured_at?->toISOString(),
+            'measured_at' => $this->measured_at?->toIso8601String(),
             'recorded_by_user_id' => $this->recorded_by_user_id,
-            'created_at' => $this->created_at?->toISOString(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

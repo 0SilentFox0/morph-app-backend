@@ -18,6 +18,7 @@ class MessageResource extends JsonResource
             'sender_id'         => $this->sender_id,
             'body'              => $this->body,
             'media_file_ids'    => $this->media_file_ids,
+            'status'            => 'sent',
             'sent_at'           => $this->sent_at?->toIso8601String(),
             'deleted_at'        => $this->deleted_at?->toIso8601String(),
         ];

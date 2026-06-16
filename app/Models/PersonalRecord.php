@@ -34,17 +34,17 @@ class PersonalRecord extends Model
 
     public function client(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Client');
+        return $this->belongsTo(Client::class);
     }
 
     public function exercise(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Exercise');
+        return $this->belongsTo(Exercise::class);
     }
 
     public function workoutLogSet(): BelongsTo
     {
-        return $this->belongsTo('App\Models\WorkoutLogSet');
+        return $this->belongsTo(WorkoutLogSet::class);
     }
 
     // ── Accessors ─────────────────────────────────────────────────

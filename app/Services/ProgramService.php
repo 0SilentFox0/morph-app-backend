@@ -43,6 +43,8 @@ class ProgramService
 
         $query->orderBy($sortField, $sortDirection);
 
+        $query->with('coverFile');
+
         return $query->cursorPaginate(perPage: $filters['per_page'] ?? 15);
     }
 
@@ -62,7 +64,7 @@ class ProgramService
                 $this->syncExercises($program, $exercises);
             }
 
-            return $program->load('exercises.exercise');
+            return $program->load(['exercises.exercise', 'coverFile']);
         });
     }
 
@@ -70,7 +72,7 @@ class ProgramService
     {
         $program->increment('views_count');
 
-        return $program->load('exercises.exercise');
+        return $program->load(['exercises.exercise', 'coverFile']);
     }
 
     public function update(Program $program, array $data): Program
@@ -85,7 +87,7 @@ class ProgramService
                 $this->syncExercises($program, $exercises);
             }
 
-            return $program->refresh()->load('exercises.exercise');
+            return $program->refresh()->load(['exercises.exercise', 'coverFile']);
         });
     }
 

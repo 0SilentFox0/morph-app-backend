@@ -10,7 +10,7 @@ use App\Services\ChatService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
 class ConversationController extends Controller
@@ -111,7 +111,7 @@ class ConversationController extends Controller
     )]
     public function messages(Request $request, Conversation $conversation): AnonymousResourceCollection
     {
-        $this->authorize('view', $conversation);
+        Gate::authorize('view', $conversation);
 
         $messages = $this->chatService->getMessages(
             $conversation,

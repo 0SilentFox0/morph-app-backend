@@ -16,9 +16,9 @@ class PersonalRecordResource extends JsonResource
             'weight_kg' => $this->weight_kg,
             'reps' => $this->reps,
             'estimated_1rm' => $this->estimated_1rm,
-            'achieved_at' => $this->achieved_at?->toISOString(),
+            'achieved_at' => $this->achieved_at?->toIso8601String(),
             'exercise' => $this->whenLoaded('exercise', fn () => new \App\Http\Resources\ExerciseResource($this->exercise)),
-            'created_at' => $this->created_at?->toISOString(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

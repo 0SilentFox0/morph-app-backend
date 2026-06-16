@@ -73,6 +73,18 @@ class UserService
     }
 
     /**
+     * Mark onboarding as complete. Idempotent — keeps existing timestamp if already set.
+     */
+    public function completeOnboarding(User $user): User
+    {
+        if (!$user->onboarding_completed_at) {
+            $user->update(['onboarding_completed_at' => now()]);
+        }
+
+        return $user->refresh();
+    }
+
+    /**
      * Get the onboarding progress for the user, creating a default if none exists.
      */
     public function getOnboardingProgress(User $user): OnboardingProgress

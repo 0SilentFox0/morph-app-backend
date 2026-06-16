@@ -17,7 +17,7 @@ use App\Services\WorkoutTrackingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use OpenApi\Attributes as OA;
 
 class WorkoutLogController extends Controller
@@ -81,7 +81,7 @@ class WorkoutLogController extends Controller
     )]
     public function finish(Request $request, WorkoutLog $log): WorkoutLogResource
     {
-        $this->authorize('update', $log);
+        Gate::authorize('update', $log);
 
         $log = $this->workoutTrackingService->finishWorkout($log, $request->user());
 
@@ -113,7 +113,7 @@ class WorkoutLogController extends Controller
     )]
     public function show(WorkoutLog $log): WorkoutLogResource
     {
-        $this->authorize('view', $log);
+        Gate::authorize('view', $log);
 
         return new WorkoutLogResource(
             $this->workoutTrackingService->getLog($log),
@@ -158,7 +158,7 @@ class WorkoutLogController extends Controller
     )]
     public function addExercise(AddExerciseRequest $request, WorkoutLog $log): JsonResponse
     {
-        $this->authorize('update', $log);
+        Gate::authorize('update', $log);
 
         $exercise = $this->workoutTrackingService->addExercise($log, $request->validated());
 
@@ -207,7 +207,7 @@ class WorkoutLogController extends Controller
     )]
     public function logSet(LogSetRequest $request, WorkoutLog $log): JsonResponse
     {
-        $this->authorize('logSet', $log);
+        Gate::authorize('logSet', $log);
 
         $validated = $request->validated();
         $exercise = WorkoutLogExercise::findOrFail($validated['workout_log_exercise_id']);
@@ -261,7 +261,7 @@ class WorkoutLogController extends Controller
     public function updateSet(UpdateSetRequest $request, WorkoutLogSet $set): WorkoutLogSetResource
     {
         $log = $set->workoutLog;
-        $this->authorize('update', $log);
+        Gate::authorize('update', $log);
 
         $set = $this->workoutTrackingService->updateSet($set, $request->validated(), $request->user());
 
@@ -286,7 +286,7 @@ class WorkoutLogController extends Controller
     public function deleteSet(WorkoutLogSet $set): JsonResponse
     {
         $log = $set->workoutLog;
-        $this->authorize('update', $log);
+        Gate::authorize('update', $log);
 
         $this->workoutTrackingService->deleteSet($set);
 

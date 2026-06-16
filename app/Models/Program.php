@@ -22,6 +22,9 @@ class Program extends Model
         'difficulty',
         'estimated_duration_min',
         'cover_file_id',
+        'category',
+        'price',
+        'price_currency',
         'views_count',
         'likes_count',
         'archived_at',
@@ -41,7 +44,7 @@ class Program extends Model
 
     public function coverFile(): BelongsTo
     {
-        return $this->belongsTo('App\Models\MediaFile', 'cover_file_id');
+        return $this->belongsTo(MediaFile::class, 'cover_file_id');
     }
 
     public function exercises(): HasMany

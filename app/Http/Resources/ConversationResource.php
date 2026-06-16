@@ -36,6 +36,11 @@ class ConversationResource extends JsonResource
                 return $this->participants->map(fn ($p) => [
                     'user_id'      => $p->user_id,
                     'last_read_at' => $p->last_read_at?->toIso8601String(),
+                    'user'         => $p->relationLoaded('user') && $p->user ? [
+                        'id'         => $p->user->id,
+                        'name'       => $p->user->name,
+                        'avatar_url' => $p->user->avatar_url,
+                    ] : null,
                 ]);
             }),
             'last_message'    => new MessageResource($this->whenLoaded('lastMessage')),

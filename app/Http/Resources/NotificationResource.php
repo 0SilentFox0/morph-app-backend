@@ -19,11 +19,12 @@ class NotificationResource extends JsonResource
             'type'        => $this->type,
             'title'       => $this->title,
             'body'        => $this->body,
+            'data'        => $this->payload,
             'payload'     => $this->payload,
             'source_type' => $this->source_type,
             'source_id'   => $this->source_id,
-            'read_at'     => $this->read_at,
-            'created_at'  => $this->created_at,
+            'read_at'     => $this->read_at?->toIso8601String(),
+            'created_at'  => $this->created_at?->toIso8601String(),
         ];
     }
 }

@@ -44,11 +44,11 @@ class Transaction extends Model
 
     public function client(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Client');
+        return $this->belongsTo(Client::class);
     }
 
     public function clientPackage(): BelongsTo
     {
-        return $this->belongsTo('App\Models\ClientPackage');
+        return $this->belongsTo(ClientPackage::class);
     }
 }

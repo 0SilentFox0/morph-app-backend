@@ -45,7 +45,7 @@ class NotificationController extends Controller
     {
         $notifications = Notification::where('recipient_user_id', $request->user()->id)
             ->orderByDesc('created_at')
-            ->cursorPaginate(perPage: $request->integer('per_page', 20));
+            ->paginate(perPage: $request->integer('per_page', 20));
 
         return NotificationResource::collection($notifications);
     }
@@ -77,7 +77,7 @@ class NotificationController extends Controller
 
         $this->notificationService->markAsRead($notification);
 
-        return response()->json(['message' => 'Notification marked as read.']);
+        return new NotificationResource($notification->refresh());
     }
 
     #[OA\Post(
@@ -131,7 +131,7 @@ class NotificationController extends Controller
     {
         $count = $this->notificationService->getUnreadCount($request->user());
 
-        return response()->json(['data' => ['unread_count' => $count]]);
+        return response()->json(['data' => ['count' => $count]]);
     }
 
     #[OA\Post(

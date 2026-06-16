@@ -15,7 +15,11 @@ class SessionParticipantResource extends JsonResource
         return [
             'session_id' => $this->session_id,
             'client_id'  => $this->client_id,
-            'client'     => $this->whenLoaded('client'),
+            'client'     => $this->whenLoaded('client', fn () => [
+                'id'         => $this->client->id,
+                'name'       => $this->client->name,
+                'avatar_url' => $this->client->avatar_url,
+            ]),
         ];
     }
 }

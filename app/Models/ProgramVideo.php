@@ -29,6 +29,6 @@ class ProgramVideo extends Model
 
     public function mediaFile(): BelongsTo
     {
-        return $this->belongsTo('App\Models\MediaFile', 'media_file_id');
+        return $this->belongsTo(MediaFile::class, 'media_file_id');
     }
 }

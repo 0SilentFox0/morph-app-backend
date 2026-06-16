@@ -25,6 +25,7 @@ class WorkoutLogSetResource extends JsonResource
             'is_pr'                   => $this->is_pr,
             'client_uuid'             => $this->client_uuid,
             'version'                 => $this->version,
+            'created_at'              => $this->created_at?->toIso8601String(),
         ];
     }
 }

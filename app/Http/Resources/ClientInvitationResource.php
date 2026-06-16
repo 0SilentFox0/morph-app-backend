@@ -14,10 +14,10 @@ class ClientInvitationResource extends JsonResource
             'client_id' => $this->client_id,
             'code' => $this->code,
             'email' => $this->email,
-            'expires_at' => $this->expires_at?->toISOString(),
-            'accepted_at' => $this->accepted_at?->toISOString(),
-            'revoked_at' => $this->revoked_at?->toISOString(),
-            'created_at' => $this->created_at?->toISOString(),
+            'expires_at' => $this->expires_at?->toIso8601String(),
+            'accepted_at' => $this->accepted_at?->toIso8601String(),
+            'revoked_at' => $this->revoked_at?->toIso8601String(),
+            'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
 }

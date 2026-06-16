@@ -82,7 +82,7 @@ class WithdrawalController extends Controller
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function store(StoreWithdrawalRequest $request): WithdrawalResource
+    public function store(StoreWithdrawalRequest $request): JsonResponse
     {
         Gate::authorize('create', Withdrawal::class);
 
@@ -91,7 +91,9 @@ class WithdrawalController extends Controller
             data: $request->validated(),
         );
 
-        return new WithdrawalResource($withdrawal);
+        return (new WithdrawalResource($withdrawal))
+            ->response()
+            ->setStatusCode(201);
     }
 
     #[OA\Delete(
