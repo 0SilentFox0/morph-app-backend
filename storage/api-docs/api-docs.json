@@ -1533,8 +1533,11 @@
                                                 "$ref": "#/components/schemas/ClientPackage"
                                             }
                                         },
+                                        "links": {
+                                            "type": "object"
+                                        },
                                         "meta": {
-                                            "$ref": "#/components/schemas/PaginatedResponse/properties/meta"
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -2871,8 +2874,11 @@
                                                 "$ref": "#/components/schemas/PackageTemplate"
                                             }
                                         },
+                                        "links": {
+                                            "type": "object"
+                                        },
                                         "meta": {
-                                            "$ref": "#/components/schemas/PaginatedResponse/properties/meta"
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -5486,6 +5492,288 @@
                 ]
             }
         },
+        "/me/sessions": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get the authenticated client's sessions",
+                "operationId": "1f98d082cb3d7da86b5a55b757cd2e3c",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of sessions for the authenticated client",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Session"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/me/measurements": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get the authenticated client's body measurements",
+                "operationId": "e2396355acf1ddd2f72dc63587cf4fd2",
+                "parameters": [
+                    {
+                        "name": "metric_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "weight",
+                                "height",
+                                "body_fat_percent",
+                                "chest",
+                                "waist",
+                                "hips",
+                                "biceps",
+                                "thigh"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of body measurements",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BodyMeasurement"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Store a body measurement for the authenticated client",
+                "operationId": "da109ddc0c7db7ffc73add205270ed46",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "metric_type",
+                                    "value",
+                                    "unit",
+                                    "measured_at"
+                                ],
+                                "properties": {
+                                    "metric_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "weight",
+                                            "height",
+                                            "body_fat_percent",
+                                            "chest",
+                                            "waist",
+                                            "hips",
+                                            "biceps",
+                                            "thigh"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 75.5
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "example": "kg",
+                                        "maxLength": 8
+                                    },
+                                    "measured_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2026-06-17T10:00:00Z"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Measurement created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/BodyMeasurement"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "No client record found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/me/workout-logs": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get the authenticated client's workout logs",
+                "operationId": "54b38683ca6a02531dc5753466b994c8",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of workout logs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/WorkoutLog"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/withdrawals": {
             "get": {
                 "tags": [
@@ -6154,8 +6442,11 @@
                                                 "$ref": "#/components/schemas/WorkoutLog"
                                             }
                                         },
+                                        "links": {
+                                            "type": "object"
+                                        },
                                         "meta": {
-                                            "$ref": "#/components/schemas/PaginatedResponse/properties/meta"
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"

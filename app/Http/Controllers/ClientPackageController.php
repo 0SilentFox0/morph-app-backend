@@ -40,7 +40,8 @@ class ClientPackageController extends Controller
                             type: 'array',
                             items: new OA\Items(ref: '#/components/schemas/ClientPackage')
                         ),
-                        new OA\Property(property: 'meta', ref: '#/components/schemas/PaginatedResponse/properties/meta'),
+                        new OA\Property(property: 'links', type: 'object'),
+                        new OA\Property(property: 'meta', type: 'object'),
                     ]
                 )
             ),
