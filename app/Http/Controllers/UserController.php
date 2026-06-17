@@ -356,6 +356,29 @@ class UserController extends Controller
 
     // ── Client-self endpoints (/me/*) ──────────────────────────────
 
+    #[OA\Get(
+        path: '/me/sessions',
+        summary: 'Get the authenticated client\'s sessions',
+        security: [['sanctum' => []]],
+        tags: ['Users'],
+        parameters: [
+            new OA\Parameter(name: 'per_page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 15)),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Paginated list of sessions for the authenticated client',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/Session')),
+                        new OA\Property(property: 'links', type: 'object'),
+                        new OA\Property(property: 'meta', type: 'object'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+        ],
+    )]
     public function mySessions(Request $request): AnonymousResourceCollection
     {
         $sessions = TrainingSession::whereHas('participants', function ($q) use ($request): void {
@@ -370,6 +393,32 @@ class UserController extends Controller
         return SessionResource::collection($sessions);
     }
 
+    #[OA\Get(
+        path: '/me/measurements',
+        summary: 'Get the authenticated client\'s body measurements',
+        security: [['sanctum' => []]],
+        tags: ['Users'],
+        parameters: [
+            new OA\Parameter(name: 'metric_type', in: 'query', required: false, schema: new OA\Schema(type: 'string', enum: ['weight', 'height', 'body_fat_percent', 'chest', 'waist', 'hips', 'biceps', 'thigh'])),
+            new OA\Parameter(name: 'from', in: 'query', required: false, schema: new OA\Schema(type: 'string', format: 'date')),
+            new OA\Parameter(name: 'to', in: 'query', required: false, schema: new OA\Schema(type: 'string', format: 'date')),
+            new OA\Parameter(name: 'per_page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 15)),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Paginated list of body measurements',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/BodyMeasurement')),
+                        new OA\Property(property: 'links', type: 'object'),
+                        new OA\Property(property: 'meta', type: 'object'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+        ],
+    )]
     public function myMeasurements(Request $request): AnonymousResourceCollection
     {
         $clientId = $this->resolveClientId($request);
@@ -386,6 +435,38 @@ class UserController extends Controller
         return BodyMeasurementResource::collection($measurements);
     }
 
+    #[OA\Post(
+        path: '/me/measurements',
+        summary: 'Store a body measurement for the authenticated client',
+        security: [['sanctum' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['metric_type', 'value', 'unit', 'measured_at'],
+                properties: [
+                    new OA\Property(property: 'metric_type', type: 'string', enum: ['weight', 'height', 'body_fat_percent', 'chest', 'waist', 'hips', 'biceps', 'thigh']),
+                    new OA\Property(property: 'value', type: 'number', format: 'float', example: 75.5),
+                    new OA\Property(property: 'unit', type: 'string', example: 'kg', maxLength: 8),
+                    new OA\Property(property: 'measured_at', type: 'string', format: 'date-time', example: '2026-06-17T10:00:00Z'),
+                ],
+            ),
+        ),
+        tags: ['Users'],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Measurement created',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', ref: '#/components/schemas/BodyMeasurement'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 404, description: 'No client record found'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ],
+    )]
     public function storeMyMeasurement(StoreMeasurementRequest $request): JsonResponse
     {
         $clientId = $this->resolveClientId($request);
@@ -407,6 +488,29 @@ class UserController extends Controller
             ->setStatusCode(201);
     }
 
+    #[OA\Get(
+        path: '/me/workout-logs',
+        summary: 'Get the authenticated client\'s workout logs',
+        security: [['sanctum' => []]],
+        tags: ['Users'],
+        parameters: [
+            new OA\Parameter(name: 'per_page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 15)),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Paginated list of workout logs',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/WorkoutLog')),
+                        new OA\Property(property: 'links', type: 'object'),
+                        new OA\Property(property: 'meta', type: 'object'),
+                    ],
+                ),
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+        ],
+    )]
     public function myWorkoutLogs(Request $request): AnonymousResourceCollection
     {
         $logs = WorkoutLog::whereHas('session.participants', function ($q) use ($request): void {

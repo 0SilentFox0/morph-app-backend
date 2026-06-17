@@ -5317,6 +5317,36 @@
                 ]
             }
         },
+        "/me/onboarding/complete": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Mark onboarding as complete",
+                "description": "Mark onboarding as complete.",
+                "operationId": "f56e69e578767206185b5e232bd95209",
+                "responses": {
+                    "200": {
+                        "description": "Onboarding marked complete",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/me/onboarding": {
             "get": {
                 "tags": [
