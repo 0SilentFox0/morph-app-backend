@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -41,6 +42,8 @@ class User extends Authenticatable
         'goals',
         'fitness_level',
         'onboarding_completed_at',
+        'email_verified_at',
+        'deletion_scheduled_at',
     ];
 
     protected $hidden = [
@@ -50,19 +53,19 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password_hash'            => 'hashed',
+            'password_hash' => 'hashed',
             'notification_preferences' => 'array',
-            'certifications'           => 'array',
-            'training_types'           => 'array',
-            'client_types'             => 'array',
-            'locations'                => 'array',
-            'work_schedule_days'       => 'array',
-            'goals'                    => 'array',
-            'points'                   => 'integer',
-            'email_verified_at'        => 'datetime',
-            'onboarding_completed_at'  => 'datetime',
-            'last_seen_at'             => 'datetime',
-            'deletion_scheduled_at'    => 'datetime',
+            'certifications' => 'array',
+            'training_types' => 'array',
+            'client_types' => 'array',
+            'locations' => 'array',
+            'work_schedule_days' => 'array',
+            'goals' => 'array',
+            'points' => 'integer',
+            'email_verified_at' => 'datetime',
+            'onboarding_completed_at' => 'datetime',
+            'last_seen_at' => 'datetime',
+            'deletion_scheduled_at' => 'datetime',
         ];
     }
 
@@ -126,7 +129,7 @@ class User extends Authenticatable
         return $this->hasMany(TrainingSession::class, 'trainer_id');
     }
 
-    public function conversations(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function conversations(): BelongsToMany
     {
         return $this->belongsToMany(
             Conversation::class,

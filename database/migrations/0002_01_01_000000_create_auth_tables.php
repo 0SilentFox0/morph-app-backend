@@ -41,6 +41,7 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->string('token_hash', 255)->unique();
             $table->timestamp('expires_at')->useCurrent();
+            $table->timestamp('verified_at')->nullable();
             $table->string('last_send_status', 32)->nullable();
             $table->timestamp('created_at')->nullable();
         });
